@@ -165,6 +165,20 @@ export function routePrompt(query, skills = null) {
       if (/verification|evidence before assertions/i.test(descLower)) score += 40;
     }
 
+    // New command pack boosters
+    if (/boost|make it faster|performance boost|capacity/i.test(queryLower)) {
+      if (/\bboost\b|performance and capability/i.test(skill.name + ' ' + descLower)) score += 45;
+    }
+    if (/grill|critique|tear (?:this|it) apart|stress.?test|ruthless review/i.test(queryLower)) {
+      if (/grill|rigorous(?: code)? review|constructive criticism/i.test(skill.name + ' ' + descLower)) score += 45;
+    }
+    if (/roadmap|milestones?\b|project plan|checkpoints?\b|phases?\b/i.test(queryLower)) {
+      if (/roadmap|milestones|checkpoints|project planning/i.test(skill.name + ' ' + descLower)) score += 40;
+    }
+    if (/coordinate|multi.?agent|team (?:up|work)|split across|agents (?:to|on)/i.test(queryLower)) {
+      if (/multi-?agent|team coordination|cross-agent|sub-tasks/i.test(skill.name + ' ' + descLower)) score += 40;
+    }
+
     // Library / framework docs lookup
     if (/install|set ?up|integrate|library|framework|\bsdk\b|docs for|api reference|how do i add/i.test(queryLower)) {
       if (/documentation|docs|live|framework|api referenc/i.test(descLower)) score += 35;
