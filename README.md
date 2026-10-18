@@ -33,34 +33,21 @@ When you install this suite, you receive the complete battle-tested baseline sta
 
 ---
 
-## 🚀 Quickstart: 1-Click Installation
+## 🚀 1-Line Installation (Zero-Config)
 
-Clone this repository and run the installer for your environment:
+Install the Meta-Orchestrator and baseline skills across all supported environments (**Antigravity, Claude Code, Cursor**) with a single command:
 
 ### On Windows (PowerShell)
 ```powershell
-git clone https://github.com/your-username/universal-agent-orchestrator.git
-cd universal-agent-orchestrator
-
-# Install to ALL supported agents (Antigravity, Claude Code, Cursor)
-.\scripts\install.ps1 -Target all
-
-# Or target a specific agent:
-.\scripts\install.ps1 -Target antigravity
-.\scripts\install.ps1 -Target claude
-.\scripts\install.ps1 -Target cursor
-.\scripts\install.ps1 -Target workspace
+irm https://raw.githubusercontent.com/bruh2211/universal-agent-skills/main/install.ps1 | iex
 ```
 
-### On macOS / Linux (Bash)
+### On macOS / Linux (Terminal)
 ```bash
-git clone https://github.com/your-username/universal-agent-orchestrator.git
-cd universal-agent-orchestrator
-
-# Install to all environments
-chmod +x ./scripts/install.sh
-./scripts/install.sh all
+curl -fsSL https://raw.githubusercontent.com/bruh2211/universal-agent-skills/main/install.sh | bash
 ```
+
+*(You can also target specific platforms by passing arguments, e.g. `install.ps1 -Target claude` or `./install.sh antigravity`)*
 
 ---
 
