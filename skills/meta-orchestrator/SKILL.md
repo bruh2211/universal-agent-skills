@@ -54,6 +54,7 @@ named, then the more specific one.
 | Build an MCP server | `mcp-builder` |
 | zAI/aith × staging, CRM automation, Bigin/Zoho | `bigin-business-operations` |
 | OpenCode config/plugins/SDK/troubleshooting | `opencode` |
+| Confirmed OpenCode bug: collect diagnostics, publish GitHub issue | `report` |
 | Cross-session "remember/initialize memory" | `memory-bank` (+ `memory-bank-init`) |
 | Coordinate many skills at once, or update skills | `meta-orchestrator` itself |
 
