@@ -55,6 +55,15 @@ named, then the more specific one.
 | zAI/aith × staging, CRM automation, Bigin/Zoho | `bigin-business-operations` |
 | OpenCode config/plugins/SDK/troubleshooting | `opencode` |
 | Confirmed OpenCode bug: collect diagnostics, publish GitHub issue | `report` |
+| "make it faster", performance or capability boost | `boost` |
+| Harsh critique / "grill me" / stress-test a design | `grill` |
+| Project roadmap, phases, checkpoints (/plan) | `plan` (for full build → superpowers `writing-plans`) |
+| Coordinate multiple agents or skills on one goal | `teamwork` (+ `dispatching-parallel-agents`) |
+| Voice input / text-to-speech for OpenCode desktop | `voice-mode` |
+| "What skills/MCP servers should I install" | `tools-discovery` |
+| Set up graphify / index codebase as a graph | `graphify-setup` |
+| React/Next.js performance review | `vercel-react-best-practices` |
+| Deploy/manage Railway projects | `railway` |
 | Cross-session "remember/initialize memory" | `memory-bank` (+ `memory-bank-init`) |
 | Coordinate many skills at once, or update skills | `meta-orchestrator` itself |
 
