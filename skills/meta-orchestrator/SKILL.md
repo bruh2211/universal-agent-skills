@@ -56,6 +56,7 @@ named, then the more specific one.
 | OpenCode config/plugins/SDK/troubleshooting | `opencode` |
 | Confirmed OpenCode bug: collect diagnostics, publish GitHub issue | `report` |
 | "make it faster", performance or capability boost | `boost` |
+| "fix my prompt", "this prompt is ambiguous", pre-handoff instruction cleanup | `prompt-clarity` |
 | Harsh critique / "grill me" / stress-test a design | `grill` |
 | Project roadmap, phases, checkpoints (/plan) | `plan` (for full build → superpowers `writing-plans`) |
 | Coordinate multiple agents or skills on one goal | `teamwork` (+ `dispatching-parallel-agents`) |

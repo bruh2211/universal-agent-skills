@@ -179,6 +179,11 @@ export function routePrompt(query, skills = null) {
       if (/multi-?agent|team coordination|cross-agent|sub-tasks/i.test(skill.name + ' ' + descLower)) score += 40;
     }
 
+    // Prompt clarity / instruction rewriting
+    if (/rewrite (?:my |this |the )?prompt|fix my prompt|prompt (?:is )?(?:clear|ambiguous|unclear)|instructions unclear|prep (?:a )?handoff|better prompt/i.test(queryLower)) {
+      if (/prompt|ambiguous|handoff|instruction/i.test(skill.name + ' ' + descLower)) score += 50;
+    }
+
     // Library / framework docs lookup
     if (/install|set ?up|integrate|library|framework|\bsdk\b|docs for|api reference|how do i add/i.test(queryLower)) {
       if (/documentation|docs|live|framework|api referenc/i.test(descLower)) score += 35;
