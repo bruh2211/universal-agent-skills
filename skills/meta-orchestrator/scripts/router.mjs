@@ -14,13 +14,19 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Potential skill locations across environments
+const USER_HOME = process.env.USERPROFILE || process.env.HOME || '';
+
+// Potential skill locations across environments.
+// Order matters: earlier entries win for identically-named skills in discoverSkills().
 const DEFAULT_SKILL_PATHS = [
-  path.resolve(__dirname, '../../skills'), // Workspace package skills
-  path.resolve(__dirname, '..'),           // Parent skills dir
-  path.join(process.env.USERPROFILE || process.env.HOME || '', '.gemini/config/skills'),
-  path.join(process.env.USERPROFILE || process.env.HOME || '', '.claude/skills'),
-  path.join(process.env.USERPROFILE || process.env.HOME || '', '.cursor/skills'),
-  path.resolve(process.cwd(), '.agents/skills'),
+  path.resolve(__dirname, '..', '..'),                    // OpenCode global skills root (~/.config/opencode/skills)
+  path.resolve(__dirname, '..'),                          // Parent dir fallback (inline skill folder)
+  path.join(USER_HOME, '.config/opencode/skills'),        // OpenCode global (env-resolved)
+  path.join(USER_HOME, '.agents/skills'),                 // Cross-agent global skills
+  path.join(USER_HOME, '.claude/skills'),                 // Claude Code
+  path.join(USER_HOME, '.gemini/config/skills'),          // Gemini CLI
+  path.join(USER_HOME, '.cursor/skills'),                 // Cursor
+  path.resolve(process.cwd(), '.agents/skills'),          // Workspace skills
   path.resolve(process.cwd(), 'skills')
 ];
 
@@ -54,12 +60,16 @@ export function discoverSkills(customDir = null) {
           const content = fs.readFileSync(skillFile, 'utf8');
           const meta = parseFrontmatter(content);
           if (meta && meta.name) {
-            skills.set(meta.name, {
-              name: meta.name,
-              description: meta.description,
-              path: skillFile,
-              dir: path.dirname(skillFile)
-            });
+            // First source wins: the OpenCode global dir outranks editor copies
+            // (.gemini/.claude/.cursor) of the same skill.
+            if (!skills.has(meta.name)) {
+              skills.set(meta.name, {
+                name: meta.name,
+                description: meta.description,
+                path: skillFile,
+                dir: path.dirname(skillFile)
+              });
+            }
           }
         }
       }
@@ -99,6 +109,67 @@ export function routePrompt(query, skills = null) {
     }
 
     // Domain heuristic boosters
+
+    // Ponytail / lean engineering
+    if (/ponytail|yagni|lazy|over.?engineer|over.?build|bloat|simplest|smallest|minimal/i.test(queryLower)) {
+      if (/ponytail|lazy|yagni|simplest|over-?engineering|bloat|smallest change/i.test(skill.name + ' ' + descLower)) score += 45;
+    }
+
+    // Code review vs UI-guideline disambiguation
+    if (/code review|review this|review the|review my|\bpr\b|pull request|diff/i.test(queryLower)) {
+      if (/review this change|review the current changes|quality review/i.test(descLower)) score += 30;
+      if (/web.?design|interface guidelines|\bui\b/i.test(descLower) && !/code/i.test(descLower)) score -= 10;
+    }
+    if (/audit|whole repo|entire codebase|whole codebase|scope creep|what can i delete/i.test(queryLower)) {
+      if (/audit/i.test(skill.name + ' ' + descLower)) score += 35;
+    }
+
+    // Deferred work / debt ledger
+    if (/\bdebt\b|shortcut|deferred|defer|later note/i.test(queryLower)) {
+      if (/\bdebt\b|shortcut|deferred/i.test(skill.name + ' ' + descLower)) score += 50;
+    }
+
+    // Office documents
+    if (/docx|word doc|\bdocx\b/i.test(queryLower)) {
+      if (/docx|word document/i.test(skill.name + ' ' + descLower)) score += 50;
+    }
+    if (/\bpdf\b/i.test(queryLower)) {
+      if (/\bpdf\b/i.test(skill.name + ' ' + descLower)) score += 50;
+    }
+    if (/pptx|\bslide|deck|presentation/i.test(queryLower)) {
+      if (/pptx|slide|deck|presentation/i.test(skill.name + ' ' + descLower)) score += 50;
+    }
+    if (/xlsx|excel|spreadsheet|\bcsv\b|\bcsvs\b/i.test(queryLower)) {
+      if (/xlsx|spreadsheet/i.test(skill.name + ' ' + descLower)) score += 50;
+    }
+
+    // MCP server construction
+    if (/\bmcp\b|model context protocol/i.test(queryLower)) {
+      if (/mcp|model context protocol|external api/i.test(skill.name + ' ' + descLower)) score += 40;
+    }
+
+    // Superpowers workflow stages
+    if (/brainstorm|i(?:dea|deas)|approaches|design options|before build/i.test(queryLower)) {
+      if (/brainstorm|creative work|plan anything new/i.test(descLower)) score += 35;
+    }
+    if (/plan|roadmap|break down|multi.?step/i.test(queryLower)) {
+      if (/writing-plans|implementation plan|executing an implementation plan/i.test(descLower)) score += 25;
+    }
+    if (/parallel|independent tasks|concurrent tasks/i.test(queryLower)) {
+      if (/parallel|independent tasks/i.test(descLower)) score += 35;
+    }
+    if (/worktree|isolat/i.test(queryLower)) {
+      if (/worktree|isolated workspace/i.test(skill.name + ' ' + descLower)) score += 40;
+    }
+    if (/claim|actually works|prove|verify(?: that)? (?:it )?(?:works|passes|fixes)/i.test(queryLower)) {
+      if (/verification|evidence before assertions/i.test(descLower)) score += 40;
+    }
+
+    // Library / framework docs lookup
+    if (/install|set ?up|integrate|library|framework|\bsdk\b|docs for|api reference|how do i add/i.test(queryLower)) {
+      if (/documentation|docs|live|framework|api referenc/i.test(descLower)) score += 35;
+    }
+
     if (/ui|design|frontend|landing|component|button|color|theme|css|tailwind|html|hero|card/i.test(queryLower)) {
       if (/design|taste|ui|frontend|css|style|interface/i.test(skill.name + ' ' + descLower)) score += 20;
     }
