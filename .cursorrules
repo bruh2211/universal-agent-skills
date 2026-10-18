@@ -1,0 +1,6 @@
+# Cursor Project Rules
+
+This repository follows the universal `AGENTS.md` open standard for agent instructions and orchestration.
+
+Always read and follow the Meta-Orchestration protocol, dynamic skill selection, memory bank checks, and TDD verification gates defined in:
+-> AGENTS.md
